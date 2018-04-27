@@ -1,8 +1,7 @@
-(ns snake.core
-  (:require [clojure.string :as s]
-            [quil.core :as q])
-  (:import java.awt.event.KeyEvent)
-  (:gen-class))
+
+(require  '[clojure.string :as s]
+          '[quil.core :as q])
+(import 'java.awt.event.KeyEvent)
 
 ;; -------------------------------------------------------------------------------------------
 ;; ----------------------------------------- GLOBALS -----------------------------------------
@@ -342,14 +341,13 @@
 ;; ------------------------------------------ MAIN -------------------------------------------
 ;; -------------------------------------------------------------------------------------------
 
-(defn -main []
-  (q/defsketch snake
-    :title "Snake"
-    :settings #(q/smooth 2)
-    :setup setup
-    :renderer :opengl
-    :key-pressed read-input
-    :mouse-clicked #(swap! GAME-RUNNING? not)
-    :draw show-game!
-    :features [:exit-on-close]
-    :size [WINDOW-WIDTH WINDOW-HEIGHT]))
+(q/defsketch snake
+  :title "Snake"
+  :settings #(q/smooth 2)
+  :setup setup
+  :renderer :opengl
+  :key-pressed read-input
+  :mouse-clicked #(swap! GAME-RUNNING? not)
+  :draw show-game!
+  :features [:exit-on-close]
+  :size [WINDOW-WIDTH WINDOW-HEIGHT])
