@@ -1,4 +1,3 @@
-
 (require  '[clojure.string :as s]
           '[quil.core :as q])
 
@@ -20,17 +19,19 @@
 ;; The number of apples the player has eaten so far.
 (def NUM-APPLES (atom 0))
 
+(def LAST-MOVE-TIME (atom (System/currentTimeMillis))) ;; The exact time of when the snake last moved.
+
 ;; This file will persist the player's high score.
 (def HIGH-SCORE-FILE "./score.dat")
 
 ;; GUI Options.
 (def WINDOW-WIDTH 500)
 (def WINDOW-HEIGHT 500)
-(def SQUARE-WIDTH 10)
-(def SQUARE-HEIGHT 10)
+(def SQUARE-WIDTH 20)
+(def SQUARE-HEIGHT 20)
 (def NUM-ROWS (/ WINDOW-WIDTH SQUARE-WIDTH))
 (def NUM-COLS (/ WINDOW-HEIGHT SQUARE-HEIGHT))
-(def FPS 8)
+(def FPS 50)
 
 (def EMPTY-LINE
   (into
@@ -46,9 +47,9 @@
 
 ;; The snake is represented by a seq of maps (which contain x,y coordinates).
 ;; The first element of the seq is the head of the snake and the rest are the body.
-;; The snake is initially 2 squares long, starting at position x=25,y=25
+;; The snake is initially 2 squares long, starting at position x=15,y=15
 (def SNAKE
-  (atom '({:row 25 :col 25} {:row 25 :col 26})))
+  (atom '({:row 15 :col 15} {:row 15 :col 16})))
 
 ;; -------------------------------------------------------------------------------------------
 ;; ---------------------------------------- COLLISION ----------------------------------------
@@ -330,13 +331,21 @@
       (= :snake-collision collision) (swap! GAME-OVER? (fn [x] true))
       (= :side-collision collision)  (swap! GAME-OVER? (fn [x] true)))))
 
+(defn draw-playfield!
+  "Basically calls the game loop and draws the snake and playfield every 110 milliseconds."
+  []
+  (when (>
+         (- (System/currentTimeMillis) @LAST-MOVE-TIME)
+         110)
+    (reset! LAST-MOVE-TIME (System/currentTimeMillis))
+    (game-loop!)
+    (print-matrix! (insert-snake @SNAKE @PLAY-FIELD) 0)))
+
 (defn show-game! []
   (cond
     (= true @GAME-OVER?) (do (show-game-over-screen!) (overwrite-high-score! HIGH-SCORE-FILE @NUM-APPLES))
     (= false @GAME-RUNNING?) (show-pause-menu!)
-    :else (do 
-            (game-loop!)
-            (print-matrix! (insert-snake @SNAKE @PLAY-FIELD) 0))))
+    :else (draw-playfield!)))
 
 ;; -------------------------------------------------------------------------------------------
 ;; ------------------------------------------ MAIN -------------------------------------------
