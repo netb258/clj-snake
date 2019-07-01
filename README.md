@@ -1,10 +1,17 @@
-# snake
+# Snake
 
 The game of Snake written in Clojure.
 
 Uses Quil for rendering.
 
 ![Alt text](./screenshot1.png?raw=true "Title")
+
+# Controls
+
+Use the arrow keys to move.
+
+Pressing Enter or a mouse click pauses the game.
+
 
 ## License
 
